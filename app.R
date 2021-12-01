@@ -17,22 +17,22 @@ ui <- fluidPage(
   tags$head(tags$style(HTML("hr {border-top: 1px solid #BEBEBE;}"))),
   sidebarLayout(position = "left",
                 sidebarPanel("Filteroptionen",
-                             # checkboxInput("a1", "Aufgabe 1", value = F),
                              sliderTextInput( "sliderPlayers",
                                               "Auswahl Spieler die angezeigt werden:",
                                               choices = Items,
                                               selected = Items[c(100, 1800)]),
                              checkboxInput("log1", "Log10 Skalierung", value = F),
-
+                             
                              hr(),
-
+                             
                              checkboxInput("sliderAgeWage", "Gegenüberstellung Age-Wage", value = T),
                              checkboxInput("aliderAgeOverall", "Gegenüberstellung Age-Overall", value = F),
                              hr(),
                              
-                             #Teil c: Filtern
+                             #Teil c: Filter
                              selectInput("selectFilter", "Filter:",
-                                         c("Nationality" = "nationality",
+                                         c("None" = "none",
+                                           "Nationality" = "nationality",
                                            "Club" = "club")),
                              
                              sliderTextInput( "sliderChooseNationality",
@@ -42,11 +42,11 @@ ui <- fluidPage(
                              sliderTextInput( "sliderChooseClub",
                                               "Filter choice club",
                                               choices = clubs)
-                            
-
-
-
-
+                             
+                             
+                             
+                             
+                             
                 ),
                 mainPanel("main panel",
                           column(6,plotOutput(outputId="plotgraph", width="1000px",height="900px"))
@@ -55,32 +55,29 @@ ui <- fluidPage(
 )
 
 server <- function(input, output) {
-
+  
   pt1 <- reactive({
     if (!input$sliderAgeWage) return (NULL)
     fromPlayer <- match(input$sliderPlayers[1], Items)
     toPlayer <- match(input$sliderPlayers[2], Items)
     itemsInRange <- unique(sort(Items[fromPlayer:toPlayer]))
     
-    # if(input$selectFilter == "nationality"){
-    #   itemsFilterNationality <- subset(df, Nationality %in% input$sliderChooseNationality)
-    #   p1 <- ggplot(subset(df, Name %in% itemsFilterNationality), aes(x=Age, y = Wage)) + geom_boxplot() +
-    #     labs(title = "Age-Wage (Filter: Nationality)", x = "Age", y = "Wage")
-    # }else if(input$selectFilter == "club"){
-    #   itemsFilterClub <- subset(df, Club %in% input$sliderChooseClub)
-    #   p1 <- ggplot(subset(df, Name %in% itemsFilterClub), aes(x= Age, y = Wage)) + geom_boxplot() +
-    #     labs(title = "Age-Wage (Filter: Club)", x = "Age", y = "Wage")
-    # } else {
-    #   
-    # }
     
-    p1 <- ggplot(subset(df, Name %in% itemsInRange), aes(x=Age, y = Wage)) + geom_point() +
-           labs(title = "Age-Wage", x = "Age", y = "Wage")
+    if(input$selectFilter == "nationality"){
+      p1 <- ggplot(subset(df, ((Name %in% itemsInRange) & (Nationality %in% input$sliderChooseNationality))), aes(x=Age, y = Wage))  + geom_point(color = "#FF0000") +
+        labs(title = "Age-Wage", x = "Age", y = "Wage")
+    }else if(input$selectFilter == "club"){
+      p1 <- ggplot(subset(df, ((Name %in% itemsInRange) & (Club %in% input$sliderChooseClub))), aes(x= Age, y = Wage)) + geom_point(color = "#FF0000") +
+        labs(title = "Age-Wage", x = "Age", y = "Wage")
+    } else {
+      p1 <- ggplot(subset(df, Name %in% itemsInRange), aes(x=Age, y = Wage)) + geom_point(color = "#FF0000") +
+        labs(title = "Age-Wage", x = "Age", y = "Wage")
+    }
     
     p1
     
   })
-
+  
   output$plotgraph = renderPlot({
     ptlist <- list(pt1())
     #loesche die Null Plots von der Liste
