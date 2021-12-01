@@ -25,8 +25,8 @@ ui <- fluidPage(
                              
                              hr(),
                              
-                             checkboxInput("sliderAgeWage", "Gegenüberstellung Age-Wage", value = T),
-                             checkboxInput("aliderAgeOverall", "Gegenüberstellung Age-Overall", value = F),
+                             checkboxInput("checkBoxAgeWage", "Gegenüberstellung Age-Wage", value = T),
+                             checkboxInput("checkBoxAgeOverall", "Gegenüberstellung Age-Overall", value = F),
                              hr(),
                              
                              #Teil c: Filter
@@ -56,8 +56,8 @@ ui <- fluidPage(
 
 server <- function(input, output) {
   
-  pt1 <- reactive({
-    if (!input$sliderAgeWage) return (NULL)
+  wageAgeCompare <- reactive({
+    if (!input$checkBoxAgeWage) return (NULL)
     fromPlayer <- match(input$sliderPlayers[1], Items)
     toPlayer <- match(input$sliderPlayers[2], Items)
     itemsInRange <- unique(sort(Items[fromPlayer:toPlayer]))
@@ -78,8 +78,30 @@ server <- function(input, output) {
     
   })
   
+  overallAgeCompare <- reactive({
+    if (!input$checkBoxAgeOverall) return (NULL)
+    fromPlayer <- match(input$sliderPlayers[1], Items)
+    toPlayer <- match(input$sliderPlayers[2], Items)
+    itemsInRange <- unique(sort(Items[fromPlayer:toPlayer]))
+    
+    
+    if(input$selectFilter == "nationality"){
+      p1 <- ggplot(subset(df, ((Name %in% itemsInRange) & (Nationality %in% input$sliderChooseNationality))), aes(x=Age, y = Overall))  + geom_point(color = "#FF0000") +
+        labs(title = "Age-Overall", x = "Age", y = "Overall")
+    }else if(input$selectFilter == "club"){
+      p1 <- ggplot(subset(df, ((Name %in% itemsInRange) & (Club %in% input$sliderChooseClub))), aes(x= Age, y = Overall)) + geom_point(color = "#FF0000") +
+        labs(title = "Age-Overall", x = "Age", y = "Overall")
+    } else {
+      p1 <- ggplot(subset(df, Name %in% itemsInRange), aes(x=Age, y = Overall)) + geom_point(color = "#FF0000") +
+        labs(title = "Age-Overall", x = "Age", y = "Overall")
+    }
+    
+    p1
+    
+  })
+  
   output$plotgraph = renderPlot({
-    ptlist <- list(pt1())
+    ptlist <- list(wageAgeCompare(), overallAgeCompare())
     #loesche die Null Plots von der Liste
     to_delete <- !sapply(ptlist,is.null)
     ptlist <- ptlist[to_delete]
