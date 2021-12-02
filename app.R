@@ -121,8 +121,7 @@ server <- function(input, output) {
   }
   
   verteilung <- reactive({
-    if (!input$selectVerteilung) return (NULL)
-    
+    if (input$selectVerteilung == "None") return (NULL)
     itemsInRange = compareRows()
   })
   
