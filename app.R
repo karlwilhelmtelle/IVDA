@@ -156,9 +156,22 @@ server <- function(input, output) {
     return(subsetItems)
   }
   
-  getGGPlot <- function (title, x, y, aesCustom) {
+  getLog10Scaling <- function (p1, title, x, y) {
+    if(input$checkBoxLogScaling) {
+      p1 <- p1 + scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x), 
+                               labels = trans_format("log10", math_format(10^.x))) +
+        labs(title = paste(title,"(log10 scaling)", sep = " "), x = x, y = y)
+    }
+    return(p1)
+  }
+  
+  getGGPlot <- function (title, x, y, aesCustom, log10Scaling) {
     p1 <- ggplot(getSubsetItems(), aesCustom) + geom_point(color = "#FF0000") + 
-      labs(title = title, x = x, y = y)
+      labs(title = title, x = x, y = y) +
+      scale_y_continuous(labels = comma)
+    if (log10Scaling) {
+      p1 = getLog10Scaling(p1, title, x, y)
+    }
     return(p1)
   }
   
@@ -166,6 +179,7 @@ server <- function(input, output) {
     p1 <- ggplot(getSubsetItems(), aesCustom) +
       geom_bar(stat="count", position = "dodge", fill = "#FF0000") +
       labs(title = title, x = x, y = y)
+    p1 = getLog10Scaling(p1, title, x, y)
     return(p1)
   }
   
@@ -179,15 +193,8 @@ server <- function(input, output) {
   wageAgeCompare <- reactive({
     if (!input$checkBoxAgeWage) return (NULL)
    
-    p1 = getGGPlot("Age-Wage", "Age", "Wage (€)", aes(x = Age, y = Wage)) + 
-      scale_y_continuous(labels = comma)
-    
-    if(input$checkBoxLogScaling) {
-      p1 <- p1 + scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x), 
-                               labels = trans_format("log10", math_format(10^.x))) +
-        labs(title = "Age-Wage (log10 scaling)", x = "Age", y = "Wage (€)")
-    }
-    
+    p1 = getGGPlot("Age-Wage", "Age", "Wage (€)", aes(x = Age, y = Wage), TRUE)
+      
     p1
     
   })
@@ -195,7 +202,7 @@ server <- function(input, output) {
   overallAgeCompare <- reactive({
     if (!input$checkBoxAgeOverall) return (NULL)
     
-    p1 = getGGPlot("Age-Overall", "Age", "Overall", aes(x = Age, y = Overall))
+    p1 = getGGPlot("Age-Overall", "Age", "Overall", aes(x = Age, y = Overall), FALSE)
     
     p1
   })
