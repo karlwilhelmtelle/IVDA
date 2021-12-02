@@ -24,7 +24,9 @@ ui <- fluidPage(
                              hr(),
                              
                              checkboxInput("checkBoxAgeWage", "Gegenüberstellung Age-Wage", value = T),
+                             checkboxInput("checkBoxLogScaling", "Log10 Scaling", value = F),
                              checkboxInput("checkBoxAgeOverall", "Gegenüberstellung Age-Overall", value = F),
+                             
                              hr(),
                              
                              #Teil c: Filter
@@ -67,8 +69,6 @@ ui <- fluidPage(
 )
 
 server <- function(input, output) {
-
-  
   wageAgeCompare <- reactive({
     if (!input$checkBoxAgeWage) return (NULL)
    
@@ -88,13 +88,17 @@ server <- function(input, output) {
     
     if(input$selectFilter == "nationality"){
       p1 <- ggplot(subset(df, ((Name %in% itemsInRange) & (Nationality %in% input$sliderChooseNationality))), aes(x=Age, y = Wage))  + geom_point(color = "#FF0000") +
-        labs(title = "Age-Wage", x = "Age", y = "Wage") + scale_y_continuous(labels = comma)
+        labs(title = "Age-Wage", x = "Age", y = "Wage (€)") + scale_y_continuous(labels = comma)
     }else if(input$selectFilter == "club"){
       p1 <- ggplot(subset(df, ((Name %in% itemsInRange) & (Club %in% input$sliderChooseClub))), aes(x= Age, y = Wage)) + geom_point(color = "#FF0000") +
-        labs(title = "Age-Wage", x = "Age", y = "Wage") + scale_y_continuous(labels = comma)
+        labs(title = "Age-Wage", x = "Age", y = "Wage (€)") + scale_y_continuous(labels = comma)
     } else {
       p1 <- ggplot(subset(df, Name %in% itemsInRange), aes(x=Age, y = Wage)) + geom_point(color = "#FF0000") +
-        labs(title = "Age-Wage", x = "Age", y = "Wage") + scale_y_continuous(labels = comma)
+        labs(title = "Age-Wage", x = "Age", y = "Wage (€)") + scale_y_continuous(labels = comma)
+    }
+    if(input$checkBoxLogScaling) {
+      p1 <- p1 + scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x), labels = trans_format("log10", math_format(10^.x))) +
+        labs(title = "Age-Wage (log10 scaling)", x = "Age", y = "Wage (€)")
     }
     
     p1
