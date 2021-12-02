@@ -186,7 +186,8 @@ server <- function(input, output) {
     p1 <- ggplot(getSubsetItems(), aesCustom) +
       geom_bar(stat="count", position = "dodge", fill = "#FF0000") +
       labs(title = title, x = x, y = y)
-    p1 = getLog10Scaling(p1, title, x, y)
+    p1 = getLog10Scaling(p1, title, x, y) +
+      theme(axis.text.x = element_text(angle = 90, hjust = 1))
     return(p1)
   }
   
