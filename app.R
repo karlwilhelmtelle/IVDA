@@ -93,7 +93,7 @@ ui <- fluidPage(
 )
 
 server <- function(input, output) {
-  compareRows <- function () {
+  compareRowsOrAll <- function () {
     if(input$checkBoxCompareRows) {
       row1 <- as.integer(input$rowSelection1)
       row2 <- as.integer(input$rowSelection2)
@@ -107,7 +107,8 @@ server <- function(input, output) {
     }
   }
   
-  selectFilter <- function (plotFunction, items, title, x, y, aesCustom) {
+  getSubsetItems <- function () {
+    items = compareRowsOrAll()
     if(input$selectFilter == "nationality"){
       subsetItems <- subset(df, ((Name %in% items) & (Nationality %in% input$sliderChooseNationality)))
     }else if(input$selectFilter == "club"){
@@ -115,16 +116,25 @@ server <- function(input, output) {
     } else {
       subsetItems <- subset(df, Name %in% items)
     }
-    p1 <- plotFunction(subsetItems, aesCustom) + geom_point(color = "#FF0000") + 
+    return(subsetItems)
+  }
+  
+  getGGPlot <- function (title, x, y, aesCustom) {
+    p1 <- ggplot(getSubsetItems(), aesCustom) + geom_point(color = "#FF0000") + 
+      labs(title = title, x = x, y = y)
+    return(p1)
+  }
+  
+  getBarPlot <- function (title, x, y, aesCustom) {
+    p1 <- barplot(getSubsetItems(), aesCustom) + geom_point(color = "#FF0000") + 
       labs(title = title, x = x, y = y)
     return(p1)
   }
   
   verteilung <- reactive({
     if (input$selectVerteilung == "None") return (NULL)
-    itemsInRange = compareRows()
     
-    p1 = selectFilter(ggplot, itemsInRange, "Distribution", input$selectVerteilung, "Count", aes(x = Age, y = Overall))
+    p1 = getBarPlot("Distribution", input$selectVerteilung, "Count", aes(x = Age, y = Overall))
     
     p1
   })
@@ -132,9 +142,7 @@ server <- function(input, output) {
   wageAgeCompare <- reactive({
     if (!input$checkBoxAgeWage) return (NULL)
    
-    itemsInRange = compareRows()
-    
-    p1 = selectFilter(ggplot, itemsInRange, "Age-Wage", "Age", "Wage (€)", aes(x = Age, y = Wage)) + 
+    p1 = getGGPlot("Age-Wage", "Age", "Wage (€)", aes(x = Age, y = Wage)) + 
       scale_y_continuous(labels = comma)
     
     if(input$checkBoxLogScaling) {
@@ -150,9 +158,7 @@ server <- function(input, output) {
   overallAgeCompare <- reactive({
     if (!input$checkBoxAgeOverall) return (NULL)
     
-    itemsInRange = compareRows()
-    
-    p1 = selectFilter(ggplot, itemsInRange, "Age-Overall", "Age", "Overall", aes(x = Age, y = Overall))
+    p1 = getGGPlot("Age-Overall", "Age", "Overall", aes(x = Age, y = Overall))
     
     p1
   })
