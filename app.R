@@ -123,6 +123,10 @@ server <- function(input, output) {
   verteilung <- reactive({
     if (input$selectVerteilung == "None") return (NULL)
     itemsInRange = compareRows()
+    
+    p1 = selectFilter(ggplot, itemsInRange, "Distribution", input$selectVerteilung, "Count", aes(x = Age, y = Overall))
+    
+    p1
   })
   
   wageAgeCompare <- reactive({
