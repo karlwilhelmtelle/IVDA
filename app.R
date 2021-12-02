@@ -158,7 +158,7 @@ server <- function(input, output) {
   })
   
   output$plotgraph = renderPlot({
-    ptlist <- list(wageAgeCompare(), overallAgeCompare())
+    ptlist <- list(verteilung(), wageAgeCompare(), overallAgeCompare())
     #loesche die Null Plots von der Liste
     to_delete <- !sapply(ptlist,is.null)
     ptlist <- ptlist[to_delete]
