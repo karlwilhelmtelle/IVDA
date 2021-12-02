@@ -14,7 +14,6 @@ df$Wage <- str_remove_all(df$Wage, "[€]")
 df$Wage <- str_replace_all(df$Wage, "[K]", "000")
 df$Wage <- str_replace_all(df$Wage, "[M]", "000000")
 df$Wage <- as.integer(df$Wage)
-df$Age <- as.integer(df$Age)
 
 
 ui <- fluidPage(
