@@ -14,6 +14,7 @@ df$Wage <- str_remove_all(df$Wage, "[€]")
 df$Wage <- str_replace_all(df$Wage, "[K]", "000")
 df$Wage <- str_replace_all(df$Wage, "[M]", "000000")
 df$Wage <- as.integer(df$Wage)
+df$Age <- as.integer(df$Age)
 
 
 ui <- fluidPage(
@@ -126,7 +127,8 @@ server <- function(input, output) {
   }
   
   getBarPlot <- function (title, x, y, aesCustom) {
-    p1 <- barplot(getSubsetItems(), aesCustom) + geom_point(color = "#FF0000") + 
+    p1 <- ggplot(getSubsetItems(), aesCustom) +
+      geom_bar(stat="count", position = "dodge", fill = "#FF0000") +
       labs(title = title, x = x, y = y)
     return(p1)
   }
@@ -134,7 +136,7 @@ server <- function(input, output) {
   verteilung <- reactive({
     if (input$selectVerteilung == "None") return (NULL)
     
-    p1 = getBarPlot("Distribution", input$selectVerteilung, "Count", aes(x = Age, y = Overall))
+    p1 = getBarPlot("Distribution", input$selectVerteilung, "Total", aes(factor(Age)))
     
     p1
   })
