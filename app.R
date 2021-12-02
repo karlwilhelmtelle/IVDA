@@ -93,9 +93,7 @@ ui <- fluidPage(
 )
 
 server <- function(input, output) {
-  wageAgeCompare <- reactive({
-    if (!input$checkBoxAgeWage) return (NULL)
-   
+  compareRows <- function () {
     if(input$checkBoxCompareRows) {
       row1 <- as.integer(input$rowSelection1)
       row2 <- as.integer(input$rowSelection2)
@@ -103,12 +101,17 @@ server <- function(input, output) {
       playerName2 <- df[row2,2]
       print(playerName1)
       print(playerName2)
-      itemsInRange <- c(playerName1, playerName2)
+      return(c(playerName1, playerName2))
     } else {
-      itemsInRange <- df[,2]
+      return(df[,2])
     }
+  }
     
     
+  wageAgeCompare <- reactive({
+    if (!input$checkBoxAgeWage) return (NULL)
+   
+    itemsInRange = compareRows()
     
     if(input$selectFilter == "nationality"){
       p1 <- ggplot(subset(df, ((Name %in% itemsInRange) & (Nationality %in% input$sliderChooseNationality))), aes(x=Age, y = Wage))  + geom_point(color = "#FF0000") +
@@ -132,17 +135,7 @@ server <- function(input, output) {
   overallAgeCompare <- reactive({
     if (!input$checkBoxAgeOverall) return (NULL)
     
-    if(input$checkBoxCompareRows) {
-      row1 <- as.integer(input$rowSelection1)
-      row2 <- as.integer(input$rowSelection2)
-      playerName1 <- df[row1,2]
-      playerName2 <- df[row2,2]
-      print(playerName1)
-      print(playerName2)
-      itemsInRange <- c(playerName1, playerName2)
-    }else {
-      itemsInRange <- df[,2]
-    }
+    itemsInRange = compareRows()
     
     
     if(input$selectFilter == "nationality"){
