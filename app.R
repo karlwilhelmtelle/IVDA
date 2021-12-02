@@ -106,23 +106,34 @@ server <- function(input, output) {
       return(df[,2])
     }
   }
+  
+  selectFilter <- function (items, title, x, y, aesCustom) {
+    if(input$selectFilter == "nationality"){
+      subsetItems <- subset(df, ((Name %in% items) & (Nationality %in% input$sliderChooseNationality)))
+    }else if(input$selectFilter == "club"){
+      subsetItems <- subset(df, ((Name %in% items) & (Club %in% input$sliderChooseClub)))
+    } else {
+      subsetItems <- subset(df, Name %in% items)
+    }
+    p1 <- ggplot(subsetItems, aesCustom) + geom_point(color = "#FF0000") + 
+      labs(title = title, x = x, y = y)
+    return(p1)
+  }
+  
+  verteilung <- reactive({
+    if (!input$selectVerteilung) return (NULL)
     
-    
+    itemsInRange = compareRows()
+  })
+  
   wageAgeCompare <- reactive({
     if (!input$checkBoxAgeWage) return (NULL)
    
     itemsInRange = compareRows()
     
-    if(input$selectFilter == "nationality"){
-      p1 <- ggplot(subset(df, ((Name %in% itemsInRange) & (Nationality %in% input$sliderChooseNationality))), aes(x=Age, y = Wage))  + geom_point(color = "#FF0000") +
-        labs(title = "Age-Wage", x = "Age", y = "Wage (€)") + scale_y_continuous(labels = comma)
-    }else if(input$selectFilter == "club"){
-      p1 <- ggplot(subset(df, ((Name %in% itemsInRange) & (Club %in% input$sliderChooseClub))), aes(x= Age, y = Wage)) + geom_point(color = "#FF0000") +
-        labs(title = "Age-Wage", x = "Age", y = "Wage (€)") + scale_y_continuous(labels = comma)
-    } else {
-      p1 <- ggplot(subset(df, Name %in% itemsInRange), aes(x=Age, y = Wage)) + geom_point(color = "#FF0000") +
-        labs(title = "Age-Wage", x = "Age", y = "Wage (€)") + scale_y_continuous(labels = comma)
-    }
+    p1 = selectFilter(itemsInRange, "Age-Wage", "Age", "Wage (€)", aes(x = Age, y = Wage)) + 
+      scale_y_continuous(labels = comma)
+    
     if(input$checkBoxLogScaling) {
       p1 <- p1 + scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x), labels = trans_format("log10", math_format(10^.x))) +
         labs(title = "Age-Wage (log10 scaling)", x = "Age", y = "Wage (€)")
@@ -137,17 +148,7 @@ server <- function(input, output) {
     
     itemsInRange = compareRows()
     
-    
-    if(input$selectFilter == "nationality"){
-      p1 <- ggplot(subset(df, ((Name %in% itemsInRange) & (Nationality %in% input$sliderChooseNationality))), aes(x=Age, y = Overall))  + geom_point(color = "#FF0000") +
-        labs(title = "Age-Overall", x = "Age", y = "Overall")
-    }else if(input$selectFilter == "club"){
-      p1 <- ggplot(subset(df, ((Name %in% itemsInRange) & (Club %in% input$sliderChooseClub))), aes(x= Age, y = Overall)) + geom_point(color = "#FF0000") +
-        labs(title = "Age-Overall", x = "Age", y = "Overall")
-    } else {
-      p1 <- ggplot(subset(df, Name %in% itemsInRange), aes(x=Age, y = Overall)) + geom_point(color = "#FF0000") +
-        labs(title = "Age-Overall", x = "Age", y = "Overall")
-    }
+    p1 = selectFilter(itemsInRange, "Age-Overall", "Age", "Overall", aes(x = Age, y = Overall))
     
     p1
     
