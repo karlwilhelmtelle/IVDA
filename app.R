@@ -1,14 +1,19 @@
-library("readxl")
 library(shiny)
 library(shinyWidgets)
 library(ggplot2)
 library(gridExtra)
 library(scales)
+library(stringr)
+
 
 df <- read.csv(file="Aufgabe-1.csv", sep=",", header=TRUE)
 
 nationalities <- unique(sort(df[,5]))
 clubs <- unique(sort(df[,8]))
+df$Wage <- str_remove_all(df$Wage, "[€]")
+df$Wage <- str_replace_all(df$Wage, "[K]", "000")
+df$Wage <- str_replace_all(df$Wage, "[M]", "000000")
+df$Wage <- as.integer(df$Wage)
 
 
 ui <- fluidPage(
@@ -62,6 +67,7 @@ ui <- fluidPage(
 )
 
 server <- function(input, output) {
+
   
   wageAgeCompare <- reactive({
     if (!input$checkBoxAgeWage) return (NULL)
@@ -79,15 +85,16 @@ server <- function(input, output) {
     }
     
     
+    
     if(input$selectFilter == "nationality"){
       p1 <- ggplot(subset(df, ((Name %in% itemsInRange) & (Nationality %in% input$sliderChooseNationality))), aes(x=Age, y = Wage))  + geom_point(color = "#FF0000") +
-        labs(title = "Age-Wage", x = "Age", y = "Wage")
+        labs(title = "Age-Wage", x = "Age", y = "Wage") + scale_y_continuous(labels = comma)
     }else if(input$selectFilter == "club"){
       p1 <- ggplot(subset(df, ((Name %in% itemsInRange) & (Club %in% input$sliderChooseClub))), aes(x= Age, y = Wage)) + geom_point(color = "#FF0000") +
-        labs(title = "Age-Wage", x = "Age", y = "Wage")
+        labs(title = "Age-Wage", x = "Age", y = "Wage") + scale_y_continuous(labels = comma)
     } else {
       p1 <- ggplot(subset(df, Name %in% itemsInRange), aes(x=Age, y = Wage)) + geom_point(color = "#FF0000") +
-        labs(title = "Age-Wage", x = "Age", y = "Wage")
+        labs(title = "Age-Wage", x = "Age", y = "Wage") + scale_y_continuous(labels = comma)
     }
     
     p1
