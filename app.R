@@ -24,21 +24,21 @@ ui <- fluidPage(
                              hr(),
                              
                              #Teil b: Verteilung
-                                         c("None" = "none",
-                                                 "Age" = "age",
-                                                 "Nationality" = "nationality",
-                                                 "Overall" = "overall",
-                                                 "Club" = "club",
-                                                 "Value" = "value",
-                                                 "Wage" = "wage",
-                                                 "Preferred Foot" = "preferredFoot",
-                                                 "International Reputation" = "internationalReputation",
-                                                 "Weak Foot" = "weakFoot",
-                                                 "Skill Moves" = "skillMoves",
-                                                 "Work Rate" = "workRate",
-                                                 "Position" = "position",
-                                                 "Jersey Number" = "jerseyNumber"
                              selectInput("selectVerteilung", "Distribution:",
+                                         c("None",
+                                                 "Age",
+                                                 "Nationality",
+                                                 "Overall",
+                                                 "Club",
+                                                 "Value",
+                                                 "Wage",
+                                                 "Preferred Foot" = "Preferred.Foot",
+                                                 "International Reputation" = "International.Reputation",
+                                                 "Weak Foot" = "Weak.Foot",
+                                                 "Skill Moves" = "Skill.Moves",
+                                                 "Work Rate" = "Work.Rate",
+                                                 "Position" = "Position",
+                                                 "Jersey Number" = "Jersey.Number"
                                                  #continue...
                                            )),
                              
