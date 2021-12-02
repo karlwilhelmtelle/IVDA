@@ -17,11 +17,11 @@ ui <- fluidPage(
   tags$head(tags$style(HTML("hr {border-top: 1px solid #BEBEBE;}"))),
   sidebarLayout(position = "left",
                 sidebarPanel("Filteroptionen",
-                             sliderTextInput( "sliderPlayers",
-                                              "Auswahl Spieler die angezeigt werden:",
-                                              choices = Items,
-                                              selected = Items[c(100, 1800)]),
-                             checkboxInput("log1", "Log10 Skalierung", value = F),
+                             # I don't think this is needed, but i'll keep it just in case
+                             # sliderTextInput( "sliderPlayers",
+                             #                  "Range of players to be shown:",
+                             #                  choices = Items,
+                             #                  selected = Items[c(100, 1800)]),
                              
                              hr(),
                              
@@ -41,11 +41,25 @@ ui <- fluidPage(
                              
                              sliderTextInput( "sliderChooseClub",
                                               "Filter choice club",
-                                              choices = clubs)
+                                              choices = clubs),
+                             hr(),
                              
+                             #Teil d: Database row selection
+                             textInput(
+                               inputId = "rowSelection1",
+                               label = "First row to compare:",
+                               value="1",
+                               width=  '400px'
+                               ),
                              
+                             textInput(
+                               inputId = "rowSelection2",
+                               label = "Second row to compare:",
+                               value="10",
+                               width=  '400px'
+                             ), 
                              
-                             
+                             checkboxInput("checkBoxCompareRows", "Compare rows?", value = F)
                              
                 ),
                 mainPanel("main panel",
@@ -58,9 +72,20 @@ server <- function(input, output) {
   
   wageAgeCompare <- reactive({
     if (!input$checkBoxAgeWage) return (NULL)
-    fromPlayer <- match(input$sliderPlayers[1], Items)
-    toPlayer <- match(input$sliderPlayers[2], Items)
-    itemsInRange <- unique(sort(Items[fromPlayer:toPlayer]))
+   
+    if(input$checkBoxCompareRows) {
+      row1 <- as.integer(input$rowSelection1)
+      row2 <- as.integer(input$rowSelection2)
+      playerName1 <- df[row1,2]
+      playerName2 <- df[row2,2]
+      print(playerName1)
+      print(playerName2)
+      itemsInRange <- c(playerName1, playerName2)
+    } else {
+      fromPlayer <- match(input$sliderPlayers[1], Items)
+      toPlayer <- match(input$sliderPlayers[2], Items)
+      itemsInRange <- unique(sort(Items[fromPlayer:toPlayer]))
+    }
     
     
     if(input$selectFilter == "nationality"){
@@ -80,9 +105,20 @@ server <- function(input, output) {
   
   overallAgeCompare <- reactive({
     if (!input$checkBoxAgeOverall) return (NULL)
-    fromPlayer <- match(input$sliderPlayers[1], Items)
-    toPlayer <- match(input$sliderPlayers[2], Items)
-    itemsInRange <- unique(sort(Items[fromPlayer:toPlayer]))
+    
+    if(input$checkBoxCompareRows) {
+      row1 <- as.integer(input$rowSelection1)
+      row2 <- as.integer(input$rowSelection2)
+      playerName1 <- df[row1,2]
+      playerName2 <- df[row2,2]
+      print(playerName1)
+      print(playerName2)
+      itemsInRange <- c(playerName1, playerName2)
+    } else {
+      fromPlayer <- match(input$sliderPlayers[1], Items)
+      toPlayer <- match(input$sliderPlayers[2], Items)
+      itemsInRange <- unique(sort(Items[fromPlayer:toPlayer]))
+    }
     
     
     if(input$selectFilter == "nationality"){
