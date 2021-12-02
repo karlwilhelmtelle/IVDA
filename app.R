@@ -24,7 +24,6 @@ ui <- fluidPage(
                              hr(),
                              
                              #Teil b: Verteilung
-                             selectInput("selectVerteilung", "Verteilung des Attributs:",
                                          c("None" = "none",
                                                  "Age" = "age",
                                                  "Nationality" = "nationality",
@@ -39,17 +38,18 @@ ui <- fluidPage(
                                                  "Work Rate" = "workRate",
                                                  "Position" = "position",
                                                  "Jersey Number" = "jerseyNumber"
+                             selectInput("selectVerteilung", "Distribution:",
                                                  #continue...
                                            )),
                              
                              hr(),
                              
-                             checkboxInput("checkBoxAgeWage", "Gegenüberstellung Age-Wage", value = T),
+                             checkboxInput("checkBoxAgeWage", "Comparison Age-Wage", value = T),
                              checkboxInput("checkBoxLogScaling", "Log10 Scaling", value = F),
                              
                              hr(),
                              
-                             checkboxInput("checkBoxAgeOverall", "Gegenüberstellung Age-Overall", value = F),
+                             checkboxInput("checkBoxAgeOverall", "Comparison Age-Overall", value = F),
                              
                              hr(),
                              
@@ -135,7 +135,8 @@ server <- function(input, output) {
       scale_y_continuous(labels = comma)
     
     if(input$checkBoxLogScaling) {
-      p1 <- p1 + scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x), labels = trans_format("log10", math_format(10^.x))) +
+      p1 <- p1 + scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x), 
+                               labels = trans_format("log10", math_format(10^.x))) +
         labs(title = "Age-Wage (log10 scaling)", x = "Age", y = "Wage (€)")
     }
     
