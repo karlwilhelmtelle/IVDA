@@ -107,7 +107,7 @@ server <- function(input, output) {
     }
   }
   
-  selectFilter <- function (items, title, x, y, aesCustom) {
+  selectFilter <- function (plotFunction, items, title, x, y, aesCustom) {
     if(input$selectFilter == "nationality"){
       subsetItems <- subset(df, ((Name %in% items) & (Nationality %in% input$sliderChooseNationality)))
     }else if(input$selectFilter == "club"){
@@ -115,7 +115,7 @@ server <- function(input, output) {
     } else {
       subsetItems <- subset(df, Name %in% items)
     }
-    p1 <- ggplot(subsetItems, aesCustom) + geom_point(color = "#FF0000") + 
+    p1 <- plotFunction(subsetItems, aesCustom) + geom_point(color = "#FF0000") + 
       labs(title = title, x = x, y = y)
     return(p1)
   }
@@ -131,7 +131,7 @@ server <- function(input, output) {
    
     itemsInRange = compareRows()
     
-    p1 = selectFilter(itemsInRange, "Age-Wage", "Age", "Wage (€)", aes(x = Age, y = Wage)) + 
+    p1 = selectFilter(ggplot, itemsInRange, "Age-Wage", "Age", "Wage (€)", aes(x = Age, y = Wage)) + 
       scale_y_continuous(labels = comma)
     
     if(input$checkBoxLogScaling) {
@@ -149,10 +149,9 @@ server <- function(input, output) {
     
     itemsInRange = compareRows()
     
-    p1 = selectFilter(itemsInRange, "Age-Overall", "Age", "Overall", aes(x = Age, y = Overall))
+    p1 = selectFilter(ggplot, itemsInRange, "Age-Overall", "Age", "Overall", aes(x = Age, y = Overall))
     
     p1
-    
   })
   
   output$plotgraph = renderPlot({
