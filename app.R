@@ -135,8 +135,7 @@ server <- function(input, output) {
   
   verteilung <- reactive({
     if (input$selectVerteilung == "None") return (NULL)
-    
-    p1 = getBarPlot("Distribution", input$selectVerteilung, "Total", aes(factor(Age)))
+    p1 = getBarPlot("Distribution", input$selectVerteilung, "Total", aes(factor(!!as.symbol(input$selectVerteilung))))
     
     p1
   })
