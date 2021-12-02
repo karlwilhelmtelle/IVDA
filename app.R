@@ -77,11 +77,11 @@ ui <- fluidPage(
                                            "Penalties",
                                            "Composure",
                                            "Marking"
-                             )),
+                             ), selected = "Age"),
                              
                              hr(),
                              
-                             checkboxInput("checkBoxAgeWage", "Comparison Age-Wage", value = T),
+                             checkboxInput("checkBoxAgeWage", "Comparison Age-Wage", value = F),
                              checkboxInput("checkBoxLogScaling", "Log10 Scaling", value = F),
                              
                              hr(),
