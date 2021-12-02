@@ -7,7 +7,6 @@ library(scales)
 
 df <- read.csv(file="Aufgabe-1.csv", sep=",", header=TRUE)
 
-Items <- unique(sort(df[,2]))
 nationalities <- unique(sort(df[,5]))
 clubs <- unique(sort(df[,8]))
 
@@ -16,13 +15,7 @@ ui <- fluidPage(
   titlePanel("Fußballspieler"),
   tags$head(tags$style(HTML("hr {border-top: 1px solid #BEBEBE;}"))),
   sidebarLayout(position = "left",
-                sidebarPanel("Filteroptionen",
-                             # I don't think this is needed, but i'll keep it just in case
-                             # sliderTextInput( "sliderPlayers",
-                             #                  "Range of players to be shown:",
-                             #                  choices = Items,
-                             #                  selected = Items[c(100, 1800)]),
-                             
+                sidebarPanel("Visualizations",
                              hr(),
                              
                              checkboxInput("checkBoxAgeWage", "Gegenüberstellung Age-Wage", value = T),
@@ -82,9 +75,7 @@ server <- function(input, output) {
       print(playerName2)
       itemsInRange <- c(playerName1, playerName2)
     } else {
-      fromPlayer <- match(input$sliderPlayers[1], Items)
-      toPlayer <- match(input$sliderPlayers[2], Items)
-      itemsInRange <- unique(sort(Items[fromPlayer:toPlayer]))
+      itemsInRange <- df[,2]
     }
     
     
@@ -114,10 +105,8 @@ server <- function(input, output) {
       print(playerName1)
       print(playerName2)
       itemsInRange <- c(playerName1, playerName2)
-    } else {
-      fromPlayer <- match(input$sliderPlayers[1], Items)
-      toPlayer <- match(input$sliderPlayers[2], Items)
-      itemsInRange <- unique(sort(Items[fromPlayer:toPlayer]))
+    }else {
+      itemsInRange <- df[,2]
     }
     
     
