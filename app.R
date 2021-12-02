@@ -10,10 +10,16 @@ df <- read.csv(file="Aufgabe-1.csv", sep=",", header=TRUE)
 
 nationalities <- unique(sort(df[,5]))
 clubs <- unique(sort(df[,8]))
-df$Wage <- str_remove_all(df$Wage, "[€]")
-df$Wage <- str_replace_all(df$Wage, "[K]", "000")
-df$Wage <- str_replace_all(df$Wage, "[M]", "000000")
-df$Wage <- as.integer(df$Wage)
+
+convertPriceToInteger <- function (priceVar) {
+  priceVar <- str_remove_all(priceVar, "[€]")
+  priceVar <- str_replace_all(priceVar, "[K]", "000")
+  priceVar <- str_replace_all(priceVar, "[M]", "000000")
+  priceVar <- as.integer(priceVar)
+}
+
+df$Wage <- convertPriceToInteger(df$Wage)
+df$Value <- convertPriceToInteger(df$Value)
 
 
 ui <- fluidPage(
