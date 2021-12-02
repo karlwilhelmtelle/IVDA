@@ -21,6 +21,13 @@ convertPriceToInteger <- function (priceVar) {
 df$Wage <- convertPriceToInteger(df$Wage)
 df$Value <- convertPriceToInteger(df$Value)
 
+#contract valid until: convert "23-Dez-19" -> "2019"
+df[,21] <- str_replace_all(df[,21], "[0-9]+-[A-Za-z]{3}-([0-9]{2})", "20$1")
+df[,21] <- format(as.Date(df[,21], "%Y"), "%Y")
+
+#also for Joined
+#df[,19] <- str_replace_all(df[,19], "[0-9]+-[A-Za-z]{3}-([0-9]{2})", "20$1")
+#df[,19] <- format(as.Date(df[,19], "%Y"), "%Y")
 
 ui <- fluidPage(
   titlePanel("Fußballspieler"),
