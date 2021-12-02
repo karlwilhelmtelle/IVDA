@@ -23,8 +23,32 @@ ui <- fluidPage(
                 sidebarPanel("Visualizations",
                              hr(),
                              
+                             #Teil b: Verteilung
+                             selectInput("selectVerteilung", "Verteilung des Attributs:",
+                                         c("None" = "none",
+                                                 "Age" = "age",
+                                                 "Nationality" = "nationality",
+                                                 "Overall" = "overall",
+                                                 "Club" = "club",
+                                                 "Value" = "value",
+                                                 "Wage" = "wage",
+                                                 "Preferred Foot" = "preferredFoot",
+                                                 "International Reputation" = "internationalReputation",
+                                                 "Weak Foot" = "weakFoot",
+                                                 "Skill Moves" = "skillMoves",
+                                                 "Work Rate" = "workRate",
+                                                 "Position" = "position",
+                                                 "Jersey Number" = "jerseyNumber"
+                                                 #continue...
+                                           )),
+                             
+                             hr(),
+                             
                              checkboxInput("checkBoxAgeWage", "Gegenüberstellung Age-Wage", value = T),
                              checkboxInput("checkBoxLogScaling", "Log10 Scaling", value = F),
+                             
+                             hr(),
+                             
                              checkboxInput("checkBoxAgeOverall", "Gegenüberstellung Age-Overall", value = F),
                              
                              hr(),
