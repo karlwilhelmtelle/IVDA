@@ -1,7 +1,7 @@
 Data Dictionary
 Variable	Definition		Key
 PassengerId	Passenger Id
-Survival 	Survival 	0 = No, 1 = Yes
+Survived 	Survived 	0 = No, 1 = Yes
 Pclass 	Ticket class 	1 = 1st, 2 = 2nd, 3 = 3rd
 Name	Name
 Sex 	Sex 	
