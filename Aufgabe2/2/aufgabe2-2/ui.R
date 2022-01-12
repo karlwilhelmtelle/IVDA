@@ -11,7 +11,7 @@ shinyUI(fluidPage(
                         ),
                         
                         mainPanel("main panel",
-                                  column(6,plotOutput(outputId="plotgraphB", width="1000px",height="900px")))
+                                  column(6,plotOutput(outputId="plotgraphA", width="1000px",height="900px")))
                       )
              ),
              tabPanel("PCA",
@@ -21,7 +21,7 @@ shinyUI(fluidPage(
                         ),
                         
                         mainPanel("main panel",
-                                  column(6,plotOutput(outputId="plotgraphC", width="1000px",height="900px")))
+                                  column(6,plotOutput(outputId="plotgraphB", width="1000px",height="900px")))
                       )
              )
              

@@ -1,26 +1,29 @@
-#
-# This is the server logic of a Shiny web application. You can run the
-# application by clicking 'Run App' above.
-#
-# Find out more about building applications with Shiny here:
-#
-#    http://shiny.rstudio.com/
-#
-
 library(shiny)
+library(ggplot2)
+library(cluster)
+library(class)
+library(caret)
 
-# Define server logic required to draw a histogram
+df <- read.csv(file = "housing.csv")
+dfoWS <- df[1:9]
+
 shinyServer(function(input, output) {
+  
+  output$plotgraphA = renderPlot({
+    set.seed(1)
+    dfoWS <- scale(dfoWS)
+    km <- kmeans(dfoWS,input$n3)
+    d <- daisy(dfoWS, metric = "euclidean")
+    plot(silhouette(km$cluster, d))
+  })
+  
+  output$plotgraphB = renderPlot({
+    pca <- prcomp(dfoWS,scale=T)
+    dat <-pca$x[,1:2]
+    km <- kmeans(dat,input$n4)
+    mydf <- data.frame(PCA1 = pca$x[,1], PCA2 = pca$x[,2], cluster = factor(km$cluster))
+    
+    ggplot(mydf, aes(x=PCA1, y=PCA2, color = cluster)) + geom_point()
+  })
 
-    output$distPlot <- renderPlot({
-
-        # generate bins based on input$bins from ui.R
-        x    <- faithful[, 2]
-        bins <- seq(min(x), max(x), length.out = input$bins + 1)
-
-        # draw the histogram with the specified number of bins
-        hist(x, breaks = bins, col = 'darkgray', border = 'white')
-
-    })
-
-})
+  })
