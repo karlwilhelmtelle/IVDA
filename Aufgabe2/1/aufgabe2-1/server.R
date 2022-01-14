@@ -16,8 +16,8 @@ df <- na.exclude(df)
 # cross validation
 set.seed(1)
 folds <- createFolds(df$Survived, k = 10)
-errorRates = vector(mode = "numeric", length = 10)
-confusionMatrixSum = vector(mode = "numeric", length = 4)
+errorRates <- vector(mode = "numeric", length = 10)
+confusionMatrixSum <- data.frame()
 
 i = 1
 for (index in folds) {
@@ -55,20 +55,23 @@ for (index in folds) {
   errorRate <- unname(1 - accuracy)
   
   errorRates[i] <- errorRate
-  confMatrixList <- as.vector(confMatrix$table)
-  confusionMatrixSum <- confusionMatrixSum + confMatrixList
+  if (nrow(confusionMatrixSum) == 0) {
+    confusionMatrixSum <- confMatrix$table
+  } else {
+    confusionMatrixSum <- confusionMatrixSum + confMatrix$table
+  }
   
   i <- i + 1
 }
 
-errorMedian = median(errorRates)
+errorMedian <- median(errorRates)
 
 # bootstrap
 set.seed(1)
 # bootstrapped dataset
 indexBootsList <- createResample(df$Survived, times = 10, list = FALSE)
-errorRatesBoot = vector(mode = "numeric", length = 10)
-confusionMatrixSumBoot = vector(mode = "numeric", length = 4)
+errorRatesBoot <- vector(mode = "numeric", length = 10)
+confusionMatrixSumBoot <- data.frame()
 
 for (i in 1:10) {
   #print(indexBootsList[,indexBoots])
@@ -101,11 +104,15 @@ for (i in 1:10) {
   errorRate <- unname(1 - accuracy)
   errorRatesBoot[i] <- errorRate
   
-  confMatrixList <- as.vector(confMatrix$table)
-  confusionMatrixSumBoot <- confusionMatrixSumBoot + confMatrixList
+  if (nrow(confusionMatrixSumBoot) == 0) {
+    confusionMatrixSumBoot <- confMatrix$table
+  } else {
+    confusionMatrixSumBoot <- confusionMatrixSumBoot + confMatrix$table
+  }
 }
 
-errorMedianBoot = median(errorRatesBoot)
+errorMedianBoot <- median(errorRatesBoot)
+str(errorRates)
 
 shinyServer(function(input, output) {
   output$plotgraph <- renderPlot({
