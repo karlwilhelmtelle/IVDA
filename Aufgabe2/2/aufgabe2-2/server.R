@@ -12,7 +12,7 @@ shinyServer(function(input, output) {
   output$plotgraphA = renderPlot({
     set.seed(1)
     dfoWS <- scale(dfoWS)
-    km <- kmeans(dfoWS,input$n3)
+    km <- kmeans(na.omit(dfoWS),input$n3)
     d <- daisy(dfoWS, metric = "euclidean")
     plot(silhouette(km$cluster, d))
   })
