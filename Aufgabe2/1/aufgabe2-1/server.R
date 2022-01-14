@@ -116,5 +116,22 @@ str(errorRates)
 
 shinyServer(function(input, output) {
   output$plotgraph <- renderPlot({
+    plot(errorRates, type = "b")
+  })
+  
+  output$plotgraphBoot <- renderPlot({
+    plot(errorRatesBoot, type = "b")
+  })
+  
+  output$cvMedian <- renderText({ paste("Cross Validation Fehler durchschnittlich ", errorMedian*100, "%") })
+  
+  output$bootMedian <- renderText({ paste("Bootstrap Fehler durchschnittlich ", errorMedianBoot*100, "%") })
+  
+  output$confusionMatrixCV <- renderPrint({
+    confusionMatrixSum
+  })
+  
+  output$confusionMatrixBoot <- renderPrint({
+    confusionMatrixSumBoot
   })
 })
