@@ -123,9 +123,9 @@ shinyServer(function(input, output) {
     plot(errorRatesBoot, type = "b")
   })
   
-  output$cvMedian <- renderText({ paste("Cross Validation Fehler durchschnittlich ", errorMedian*100, "%") })
+  output$cvMedian <- renderText({ paste("Cross Validation (10 folds) Fehler durchschnittlich ", errorMedian*100, "%") })
   
-  output$bootMedian <- renderText({ paste("Bootstrap Fehler durchschnittlich ", errorMedianBoot*100, "%") })
+  output$bootMedian <- renderText({ paste("Bootstrap (0.632) Fehler durchschnittlich ", errorMedianBoot*100, "%") })
   
   output$confusionMatrixCV <- renderPrint({
     confusionMatrixSum
