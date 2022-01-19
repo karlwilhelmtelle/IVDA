@@ -1,29 +1,20 @@
 library(shiny)
 
-shinyUI(fluidPage(
-  
-  navbarPage("Aufgabe 2 - Teil 2",
-             
-             tabPanel("K-means",
-                      sidebarLayout(
-                        sidebarPanel(
-                          numericInput("n3", "Anzahl Cluster: ", value = 2, min = 2, max = 15)
-                        ),
-                        
-                        mainPanel("main panel",
-                                  column(6,plotOutput(outputId="plotgraphA", width="1000px",height="900px")))
-                      )
-             ),
-             tabPanel("PCA",
-                      sidebarLayout(
-                        sidebarPanel(
-                          numericInput("n4", "Anzahl Cluster: ", value = 2, min = 2, max = 15)
-                        ),
-                        
-                        mainPanel("main panel",
-                                  column(6,plotOutput(outputId="plotgraphB", width="1000px",height="900px")))
-                      )
-             )
-             
-  )
-))
+shinyUI(
+  fluidPage(
+    navbarPage("Aufgabe 2 - Teil 2",
+      tabPanel("K-means",
+        sidebarLayout(
+          sidebarPanel("Clustering using k-means"),
+          mainPanel("main panel", column(6,plotOutput(outputId="plotKMeans")))
+          )
+        ),
+      tabPanel("PCA",
+        sidebarLayout(
+          sidebarPanel("Visualization using Silhoutte Coefficient"),
+          mainPanel("main panel", column(6,plotOutput(outputId="plotPCA")))
+          )
+        )
+      )
+    )
+)

@@ -1,29 +1,23 @@
 library(shiny)
-library(ggplot2)
 library(cluster)
 library(class)
 library(caret)
+library(factoextra)
 
 df <- read.csv(file = "housing.csv")
-dfoWS <- df[1:9]
+df <- df[3:9]
+df <- na.omit(df)
+
 
 shinyServer(function(input, output) {
   
-  output$plotgraphA = renderPlot({
-    set.seed(1)
-    dfoWS <- scale(dfoWS)
-    km <- kmeans(na.omit(dfoWS),input$n3)
-    d <- daisy(dfoWS, metric = "euclidean")
-    plot(silhouette(km$cluster, d))
+  output$plotKMeans = renderPlot({
+     fviz_nbclust(df, kmeans, method = "silhouette", k.max = 15) 
   })
   
-  output$plotgraphB = renderPlot({
-    pca <- prcomp(dfoWS,scale=T)
-    dat <-pca$x[,1:2]
-    km <- kmeans(dat,input$n4)
-    mydf <- data.frame(PCA1 = pca$x[,1], PCA2 = pca$x[,2], cluster = factor(km$cluster))
-    
-    ggplot(mydf, aes(x=PCA1, y=PCA2, color = cluster)) + geom_point()
+  output$plotPCA = renderPlot({
+    optimalNumberOfClusters <- kmeans(df, 2, nstart = 25)
+    fviz_cluster(optimalNumberOfClusters, data = df)
   })
 
-  })
+})
