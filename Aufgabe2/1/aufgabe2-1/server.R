@@ -4,6 +4,8 @@ library(modelr)
 library(ggplot2)
 library(gridExtra)
 library(caret)
+library(rpart)
+library(rpart.plot)
 df <- read.csv("titanic.csv")
 
 # Datensätze mit ID über 891 kann man nicht zum Trainieren und Testen verwenden,
@@ -45,6 +47,12 @@ for (index in folds) {
                   data = train_df,
                   method = "glm", family = binomial,
                   trControl = ctrlspecs)
+  set.seed(1)
+  decisionTreeModel <- rpart(Survived ~ Pclass + Sex + Age + SibSp + Parch,
+                             data = train_df,
+                             parms = list(split = "Information"),
+                             method = "class")
+  rpart.plot(decisionTreeModel, main = paste("Decision Tree Iteration", i))
   
   predictions <- predict(model1, newdata = test_df)
   
