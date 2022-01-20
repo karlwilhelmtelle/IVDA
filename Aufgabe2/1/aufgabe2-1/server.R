@@ -112,7 +112,7 @@ for (i in 1:10) {
 }
 
 errorMedianBoot <- median(errorRatesBoot)
-str(errorRates)
+
 
 shinyServer(function(input, output) {
   output$plotgraph <- renderPlot({
