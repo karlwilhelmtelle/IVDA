@@ -35,6 +35,16 @@ shinyServer(function(input, output) {
     plot(svm, testing)
   })
   
- 
+  output$knn <- renderPlot({
+    pca <- preProcess(x = training[-14], method = "pca", pcaComp = 2)
+    training <- predict(pca, training)
+    training <- training[c(2,3,1)]
+    testing <- predict(pca, testing)
+    testing <- testing[c(2,3,1)]
+    nnet <- nnet(Weinsorte ~ ., data = training, size = 2, 
+                 decay = 1.0e-5, maxit = 50)
+    cm <- table(testing$Weinsorte, predict(nnet, testing, type = "class"))
+    print(nnet)
+  })
 })
 
