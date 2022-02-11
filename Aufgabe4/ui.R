@@ -21,7 +21,6 @@ shinyUI(fluidPage(
                                   column(6,plotOutput(outputId="svm", width="900px",height="800px"),
                                          verbatimTextOutput(outputId = "conv")))
                       )
-             ),
-             tabPanel("KNN")
+             )
   )
 ))
