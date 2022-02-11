@@ -40,15 +40,15 @@ shinyServer(function(input, output) {
   })
   
   output$knn <- renderPlot({
-    ########  usage of nnet ###########
+    ######## Nutzung von nnet ###########
     # Skalierung der Daten
     training[,-14] <- scale(training[,-14])
     testing[,-14] <- scale(testing[,-14])
     
-    # 3d vector mit size, decay, max iterations
+    # 3d Matrix mit size, decay, max iterations
     nnetParams = vector("list", length = 3)
 
-    # size: Größe des hidden layers
+    # size: hidden layer
     # size = 127 * 2/3 = 85
     # alternativ: size = Mittelwert von input und output layer (127 und 3) = 65
     # decay bremst Overfitting auf Trainingsdatensatz
@@ -71,7 +71,8 @@ shinyServer(function(input, output) {
       print(cm)
       
       pdf(paste('./nn-example',i,'.pdf'), width = 20, height = 7)
-      plot.nnet(nnet, alpha.val = 0.5, circle.col = list('lightgray', 'white'), bord.col = 'black')
+      plot.nnet(nnet, alpha.val = 0.5, 
+                circle.col = list('lightgray', 'white'), bord.col = 'black')
       dev.off()
       i <- i + 1
     }
