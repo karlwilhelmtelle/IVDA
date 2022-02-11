@@ -53,9 +53,9 @@ shinyServer(function(input, output) {
     # alternativ: size = Mittelwert von input und output layer (127 und 3) = 65
     # decay bremst Overfitting auf Trainingsdatensatz
     
-    nnetParams[[1]] <- c(4, 0.2, 100)
+    nnetParams[[1]] <- c(2, 1, 100)
 
-    nnetParams[[2]] <- c(2, 0.2, 100)
+    nnetParams[[2]] <- c(4, 0.2, 100)
 
     nnetParams[[3]] <- c(7, 0.2, 100)
     
