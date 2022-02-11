@@ -48,7 +48,7 @@ shinyServer(function(input, output) {
     # 3d vector mit size, decay, max iterations
     nnetParams = vector("list", length = 3)
 
-    # size: Größe des hidden layers
+    # size: GrÃ¶ÃŸe des hidden layers
     # size = 127 * 2/3 = 85
     # alternativ: size = Mittelwert von input und output layer (127 und 3) = 65
     # decay bremst Overfitting auf Trainingsdatensatz
